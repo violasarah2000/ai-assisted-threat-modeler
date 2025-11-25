@@ -1,6 +1,6 @@
 # AI-Assisted Threat Modeler
 
-**A local-first, privacy-focused threat modeling platform combining rule-based STRIDE analysis with LLM refinement—designed for security teams that won't compromise on data privacy.**
+**A local-first, privacy-focused threat modeling platform combining rule-based STRIDE analysis with LLM refinement—designed for security teams that won't compromise on data privacy. Contact SperksWerks.ai to learn more!**
 
 I built this Python-based security analysis tool to demonstrate how to integrate AI into real security workflows **without sending architecture data to third-party APIs**. It transforms natural language architecture descriptions into structured STRIDE threat models with visual attack graphs, automated analysis, and comprehensive HTML reports—all running locally. This project demonstrates my expertise in **AI-assisted security engineering**, **secure architecture analysis**, **production-grade Python automation**, and understanding how to apply AI responsibly in enterprise security.
 
