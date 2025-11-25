@@ -41,32 +41,28 @@ def main():
 
     # --- Build graph diagram ---
     G = build_graph(components, flows)
-    png_path = save_graph_png(G, path="diagram.png")
+    png_path = save_graph_png(G, path="artifacts/diagrams/diagram.png")
     print(f"\nDiagram saved to {png_path}")
 
-    # --- Ollama refinement (blocking, optional streaming) ---
+    # --- Ollama refinement ---
     ollama_json = None
     try:
         print("\nAsking Ollama to refine threats (this may take a while to process)...")
-
-        # Call your LLM refinement function (blocking)
-        # Optionally you could implement streaming inside this function
         ollama_json = refine_threats_with_ollama(threat_model)
 
-        # Print progress in terminal
         print("\nOllama suggestions (JSON):")
         print(json.dumps(ollama_json, indent=2))
     except Exception as e:
         print(f"\nOllama refine step skipped (error): {e}")
         ollama_json = None
 
-    # --- Generate HTML report AFTER Ollama finishes ---
+    # --- Generate HTML Report ---
     html = generate_html_report(
         text=text,
         components=components,
         flows=flows,
         threat_model=threat_model,
-        diagram_path=png_path,
+        diagram_path="artifacts/diagrams/diagram.png",
         ollama_json=ollama_json
     )
 

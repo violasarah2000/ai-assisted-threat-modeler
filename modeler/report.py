@@ -1,94 +1,71 @@
-import base64
-import json
+import os
+from datetime import datetime
 
-def generate_html_report(text, components, flows, threat_model, diagram_path="diagram.png", ollama_json=None):
-    """
-    Generate HTML report including STRIDE, diagram, components, flows, and optional Ollama JSON refinement.
-    """
-    # Encode PNG for embedding
-    with open(diagram_path, "rb") as f:
-        encoded_img = base64.b64encode(f.read()).decode("utf-8")
-
+def generate_html_report(text, components, flows, threat_model, diagram_path, ollama_json):
     html = f"""
-<html>
-<head>
-<title>AI Threat Model Report</title>
-<style>
-body {{
-    font-family: Arial, sans-serif;
-    padding: 40px;
-}}
-h1, h2 {{
-    color: #333;
-}}
-pre {{
-    background: #f5f5f5;
-    padding: 10px;
-    border-radius: 5px;
-    overflow-x: auto;
-}}
-table {{
-    border-collapse: collapse;
-    width: 100%;
-    margin-top: 20px;
-}}
-th, td {{
-    padding: 8px;
-    border: 1px solid #ccc;
-    text-align: left;
-}}
-</style>
-</head>
-<body>
+    <html>
+    <head>
+        <title>AI Threat Model Report</title>
+        <style>
+            body {{ font-family: Arial, sans-serif; margin: 40px; }}
+            h1, h2, h3 {{ color: #333; }}
+            pre {{ background: #f4f4f4; padding: 10px; border-radius: 6px; }}
+            .section {{ margin-bottom: 40px; }}
+            img {{ max-width: 800px; border: 1px solid #ccc; }}
+        </style>
+    </head>
+    <body>
 
-<h1>AI Threat Model Report</h1>
+        <h1>AI Threat Model Report</h1>
 
-<h2>System Description</h2>
-<p>{text}</p>
+        <div class="section">
+            <h2>Original System Description</h2>
+            <pre>{text}</pre>
+        </div>
 
-<h2>Components</h2>
-<ul>
-{"".join(f"<li>{c}</li>" for c in components)}
-</ul>
+        <div class="section">
+            <h2>Components</h2>
+            <ul>
+                {''.join(f'<li>{c}</li>' for c in components)}
+            </ul>
+        </div>
 
-<h2>Data Flows</h2>
-<ul>
-{"".join(f"<li>{src} → {dst}</li>" for src, dst in flows)}
-</ul>
+        <div class="section">
+            <h2>Data Flows</h2>
+            <ul>
+                {''.join(f'<li>{src} → {dst}</li>' for src, dst in flows)}
+            </ul>
+        </div>
 
-<h2>STRIDE Threat Analysis</h2>
-<table>
-<tr><th>Component</th><th>STRIDE Categories</th><th>Risk Scores</th></tr>
-"""
+        <div class="section">
+            <h2>Threat Model (STRIDE)</h2>
+            <pre>{threat_model}</pre>
+        </div>
 
-    for comp, d in threat_model["components"].items():
-        stride = ", ".join(d["stride"])
-        scores = ", ".join(f"{k}: {v}" for k, v in d["scores"].items())
-        html += f"<tr><td>{comp}</td><td>{stride}</td><td>{scores}</td></tr>"
+        <div class="section">
+            <h2>System Architecture Diagram</h2>
+            <img src="{diagram_path}" />
+        </div>
 
-    html += f"""
-</table>
+        <div class="section">
+            <h2>AI-LMM Refinements (Ollama)</h2>
+            <pre>{ollama_json}</pre>
+        </div>
 
-<h2>System Diagram</h2>
-<img src="data:image/png;base64,{encoded_img}" style="max-width: 100%;">
-
-"""
-
-    if ollama_json:
-        # Pretty-print JSON in HTML <pre>
-        formatted_json = json.dumps(ollama_json, indent=2)
-        html += f"""
-<h2>AI-Refined Threat Model (Ollama)</h2>
-<pre>{formatted_json}</pre>
-"""
-
-    html += """
-</body></html>
-"""
+    </body>
+    </html>
+    """
     return html
 
 
-def save_html_report(html, path="report.html"):
-    with open(path, "w") as f:
+def save_html_report(html, output_dir="artifacts/reports"):
+    os.makedirs(output_dir, exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+    filename = f"report-{timestamp}.html"
+    filepath = os.path.join(output_dir, filename)
+
+    with open(filepath, "w") as f:
         f.write(html)
-    return path
+
+    return filepath
