@@ -79,6 +79,8 @@ python -m spacy download en_core_web_sm
 ## Quick Start
 
 ```bash
+ollama serve
+ollama run gemma2
 python main.py
 ```
 
