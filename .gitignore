@@ -37,6 +37,10 @@ ENV/
 Thumbs.db
 
 # Generated artifacts (but keep directory structure)
+# Old root-level outputs (for cleanup after restructure)
+diagram.png
+report.html
+# New artifacts directory outputs
 artifacts/diagrams/*.png
 artifacts/reports/*.html
 artifacts/diagrams/report*.json
